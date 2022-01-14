@@ -3,9 +3,7 @@
 
 import pygame as pg
 
-<<<<<<< HEAD
 from tools import load_image
-=======
 from tools import *
 
 
@@ -29,4 +27,3 @@ class App:
 
 if __name__ == '__main__':
     App().run()
->>>>>>> feature/Nikita
