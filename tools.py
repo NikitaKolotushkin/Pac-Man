@@ -67,4 +67,12 @@ TILES_IMAGES = {
     'corner_right_bottom': load_image('corner_right_bottom.png'),
     'box': load_image('box.png'),
     'door': load_image('door.png'),
+    'eat': load_image('.png'),
+    'booster': load_image('.png'),
+    'vertical_wall_1': load_image('vertical_wall_1.png'),
+    'vertical_wall_2': load_image('vertical_wall_2.png'),
+    'vertical_wall_3': load_image('vertical_wall_3.png'),
+    'horizontal_wall_1': load_image('horizontal_wall_1.png'),
+    'horizontal_wall_2': load_image('horizontal_wall_2.png'),
+    'horizontal_wall_3': load_image('horizontal_wall_3.png'),
 }
