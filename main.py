@@ -3,8 +3,6 @@
 
 import pygame as pg
 
-from Player import Player
-from tools import load_image
 from tools import *
 
 
@@ -20,7 +18,10 @@ class App:
         pg.display.set_caption('Pac-Man')
 
     def run(self):
+        player, level_x, level_y = generate_level(load_level('main.txt'))
         while True:
+            self.screen.fill('black')
+            tiles_group.draw(self.screen)
             for e in pg.event.get():
                 if e.type == pg.QUIT:
                     exit()
