@@ -10,7 +10,7 @@ with open('data/levels/main.txt') as f:
     data = f.readlines()
 
 
-SIZE = WIDTH, HEIGHT = (len(data[0]) * 50, len(data) * 50)
+SIZE = WIDTH, HEIGHT = ((len(data[0]) - 1) * 50, len(data) * 50)
 
 all_sprites = pg.sprite.Group()
 tiles_group = pg.sprite.Group()
@@ -33,7 +33,7 @@ def load_image(name, colorkey=None):
         image.set_colorkey(colorkey)
     else:
         image = image.convert_alpha(pg.display.set_mode(SIZE))
-    return image
+    return pg.transform.scale(image, (TILE_WIDTH, TILE_HEIGHT))
 
 
 def generate_level(level):
@@ -41,15 +41,26 @@ def generate_level(level):
     for y in range(len(level)):
         for x in range(len(level[y])):
             if level[y][x] == '/':
-                pass
+                Tile('corner_left_top', x, y)
+                Wall('corner_left_top', x, y)
+            if level[y][x] == '[':
+                Tile('corner_left_bottom', x, y)
+                Wall('corner_left_bottom', x, y)
             elif level[y][x] == '-':
-                pass
+                Tile('horizontal_wall_1', x, y)
+                Wall('horizontal_wall_1', x, y)
             elif level[y][x] == '\\':
-                pass
+                Tile('corner_right_top', x, y)
+                Wall('corner_right_top', x, y)
+            elif level[y][x] == ']':
+                Tile('corner_right_bottom', x, y)
+                Wall('corner_right_bottom', x, y)
             elif level[y][x] == '|':
-                pass
+                Tile('vertical_wall_1', x, y)
+                Wall('vertical_wall_1', x, y)
             elif level[y][x] == '0':
-                pass
+                new_player = Player(x, y)
+    return new_player, x, y
 
 
 def load_level(filename):
@@ -76,3 +87,93 @@ TILES_IMAGES = {
     'horizontal_wall_2': load_image('horizontal_wall_2.png'),
     'horizontal_wall_3': load_image('horizontal_wall_3.png'),
 }
+
+
+class Wall(pg.sprite.Sprite):
+    """
+    Wall class
+    """
+
+    def __init__(self, tile_type, pos_x, pos_y):
+        super().__init__(walls_group, all_sprites)
+        self.image = TILES_IMAGES[tile_type]
+        self.rect = self.image.get_rect().move(
+            TILE_WIDTH * pos_x,
+            TILE_HEIGHT * pos_y
+        )
+
+
+class Tile(pg.sprite.Sprite):
+    """
+    Tile class
+    """
+
+    def __init__(self, tile_type, pos_x, pos_y):
+        super().__init__(tiles_group, all_sprites)
+        self.image = TILES_IMAGES[tile_type]
+        self.rect = self.image.get_rect().move(
+            TILE_WIDTH * pos_x,
+            TILE_HEIGHT * pos_y
+        )
+
+
+class Player(pg.sprite.Sprite):
+    """
+    Player class
+    """
+
+    walkLeft = [
+        load_image('pac-man_left_1.png'),
+        load_image('pac-man_left_2.png'),
+        load_image('pac-man_full.png'),
+    ]
+    walkRight = [
+        load_image('pac-man_right_1.png'),
+        load_image('pac-man_right_2.png'),
+        load_image('pac-man_full.png'),
+    ]
+    walkUp = [
+        load_image('pac-man_top_1.png'),
+        load_image('pac-man_top_2.png'),
+        load_image('pac-man_full.png'),
+    ]
+    walkDown = [
+        load_image('pac-man_bottom_1.png'),
+        load_image('pac-man_bottom_2.png'),
+        load_image('pac-man_full.png'),
+    ]
+
+    images = [walkLeft + walkRight + walkUp + walkDown]
+
+    def __init__(self, pos_x, pos_y):
+        super().__init__(player_group, all_sprites)
+
+        self.walkLeft = [
+            load_image('pac-man_left_1.png'),
+            load_image('pac-man_left_2.png'),
+            load_image('pac-man_full.png'),
+        ]
+        self.walkRight = [
+            load_image('pac-man_right_1.png'),
+            load_image('pac-man_right_2.png'),
+            load_image('pac-man_full.png'),
+        ]
+        self.walkUp = [
+            load_image('pac-man_top_1.png'),
+            load_image('pac-man_top_2.png'),
+            load_image('pac-man_full.png'),
+        ]
+        self.walkDown = [
+            load_image('pac-man_bottom_1.png'),
+            load_image('pac-man_bottom_2.png'),
+            load_image('pac-man_full.png'),
+        ]
+
+        self.images = self.walkLeft + self.walkRight + self.walkUp + self.walkDown
+
+        self.index = 0
+        self.image = self.images[self.index]
+        self.rect = pg.Rect((pos_x, pos_y), (TILE_WIDTH, TILE_HEIGHT))
+
+    def update(self, x, y):
+        pass
