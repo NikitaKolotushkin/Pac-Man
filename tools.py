@@ -9,15 +9,13 @@ import sys
 with open('data/levels/main.txt') as f:
     data = f.readlines()
 
-
-SIZE = WIDTH, HEIGHT = ((len(data[0]) - 1) * 50, len(data) * 50)
-
 all_sprites = pg.sprite.Group()
 tiles_group = pg.sprite.Group()
 walls_group = pg.sprite.Group()
 player_group = pg.sprite.Group()
 
-TILE_WIDTH = TILE_HEIGHT = 50
+TILE_WIDTH = TILE_HEIGHT = 45
+SIZE = WIDTH, HEIGHT = ((len(data[0]) - 1) * TILE_WIDTH, len(data) * TILE_HEIGHT)
 
 
 def load_image(name, colorkey=None):
@@ -49,6 +47,12 @@ def generate_level(level):
             elif level[y][x] == '-':
                 Tile('horizontal_wall_1', x, y)
                 Wall('horizontal_wall_1', x, y)
+            elif level[y][x] == '<':
+                Tile('horizontal_wall_2', x, y)
+                Wall('horizontal_wall_2', x, y)
+            elif level[y][x] == '>':
+                Tile('horizontal_wall_3', x, y)
+                Wall('horizontal_wall_3', x, y)
             elif level[y][x] == '\\':
                 Tile('corner_right_top', x, y)
                 Wall('corner_right_top', x, y)
@@ -58,6 +62,15 @@ def generate_level(level):
             elif level[y][x] == '|':
                 Tile('vertical_wall_1', x, y)
                 Wall('vertical_wall_1', x, y)
+            elif level[y][x] == '=':
+                Tile('vertical_wall_2', x, y)
+                Wall('vertical_wall_2', x, y)
+            elif level[y][x] == '#':
+                Tile('eat', x, y)
+            elif level[y][x] == '0':
+                Tile('booster', x, y)
+            elif level[y][x] == '~':
+                Tile('door', x, y)
             elif level[y][x] == '@':
                 new_player = Player(x * TILE_WIDTH, y * TILE_HEIGHT)
     return new_player, x, y
