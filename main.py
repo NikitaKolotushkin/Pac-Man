@@ -3,6 +3,7 @@
 
 import pygame as pg
 
+
 from tools import *
 
 
@@ -22,19 +23,21 @@ class App:
         while True:
             self.screen.fill('black')
             tiles_group.draw(self.screen)
+            player_group.draw(self.screen)
             for e in pg.event.get():
                 if e.type == pg.QUIT:
                     exit()
                 if e.type == pg.KEYDOWN:
                     if e.key == pg.K_LEFT or e.key == pg.K_a:
-                        pass
+                        player.animate_left()
                     if e.key == pg.K_RIGHT or e.key == pg.K_d:
-                        pass
+                        player.animate_right()
                     if e.key == pg.K_UP or e.key == pg.K_w:
-                        pass
+                        player.animate_top()
                     if e.key == pg.K_DOWN or e.key == pg.K_s:
-                        pass
-            
+                        player.animate_bottom()
+
+            player.update()
             pg.display.flip()
             self.clock.tick(self.fps)
 
