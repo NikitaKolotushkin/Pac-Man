@@ -58,8 +58,8 @@ def generate_level(level):
             elif level[y][x] == '|':
                 Tile('vertical_wall_1', x, y)
                 Wall('vertical_wall_1', x, y)
-            elif level[y][x] == '0':
-                new_player = Player(x, y)
+            elif level[y][x] == '@':
+                new_player = Player(x * TILE_WIDTH, y * TILE_HEIGHT)
     return new_player, x, y
 
 
@@ -122,29 +122,6 @@ class Player(pg.sprite.Sprite):
     Player class
     """
 
-    walkLeft = [
-        load_image('pac-man_left_1.png'),
-        load_image('pac-man_left_2.png'),
-        load_image('pac-man_full.png'),
-    ]
-    walkRight = [
-        load_image('pac-man_right_1.png'),
-        load_image('pac-man_right_2.png'),
-        load_image('pac-man_full.png'),
-    ]
-    walkUp = [
-        load_image('pac-man_top_1.png'),
-        load_image('pac-man_top_2.png'),
-        load_image('pac-man_full.png'),
-    ]
-    walkDown = [
-        load_image('pac-man_bottom_1.png'),
-        load_image('pac-man_bottom_2.png'),
-        load_image('pac-man_full.png'),
-    ]
-
-    images = [walkLeft + walkRight + walkUp + walkDown]
-
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group, all_sprites)
 
@@ -152,28 +129,73 @@ class Player(pg.sprite.Sprite):
             load_image('pac-man_left_1.png'),
             load_image('pac-man_left_2.png'),
             load_image('pac-man_full.png'),
+            load_image('pac-man_left_2.png'),
         ]
+
         self.walkRight = [
             load_image('pac-man_right_1.png'),
             load_image('pac-man_right_2.png'),
             load_image('pac-man_full.png'),
+            load_image('pac-man_right_2.png'),
         ]
+
         self.walkUp = [
             load_image('pac-man_top_1.png'),
             load_image('pac-man_top_2.png'),
             load_image('pac-man_full.png'),
+            load_image('pac-man_top_2.png'),
         ]
+
         self.walkDown = [
             load_image('pac-man_bottom_1.png'),
             load_image('pac-man_bottom_2.png'),
             load_image('pac-man_full.png'),
+            load_image('pac-man_bottom_2.png'),
         ]
 
-        self.images = self.walkLeft + self.walkRight + self.walkUp + self.walkDown
+        self.current_sprite = 0
+        self.image = self.walkRight[self.current_sprite]
+        self.rect = self.image.get_rect()
+        self.rect.topleft = [pos_x, pos_y]
+        self.direction = 'right'
+        self.walkDirections = {
+            'left': (-TILE_WIDTH // 5, 0),
+            'right': (TILE_WIDTH // 5, 0),
+            'top': (0, -TILE_HEIGHT // 5),
+            'bottom': (0, TILE_HEIGHT // 5),
+        }
+        self.animDirections = {
+            'left': self.walkLeft,
+            'right': self.walkRight,
+            'top': self.walkUp,
+            'bottom': self.walkDown,
+        }
 
-        self.index = 0
-        self.image = self.images[self.index]
-        self.rect = pg.Rect((pos_x, pos_y), (TILE_WIDTH, TILE_HEIGHT))
+    def update(self):
+        self.rect = self.rect.move(self.walkDirections[self.direction])
+        if pg.sprite.spritecollideany(self, walls_group):
+            self.rect = self.rect.move(
+                -(self.walkDirections[self.direction][0]),
+                -(self.walkDirections[self.direction][1])
+            )
+        self.update_anim()
 
-    def update(self, x, y):
-        pass
+    def update_anim(self):
+        self.current_sprite = (self.current_sprite + 1) % len(self.walkRight)
+        self.image = self.animDirections[self.direction][self.current_sprite]
+
+    def animate_left(self):
+        self.image = self.walkLeft[self.current_sprite]
+        self.direction = 'left'
+
+    def animate_right(self):
+        self.image = self.walkRight[self.current_sprite]
+        self.direction = 'right'
+
+    def animate_top(self):
+        self.image = self.walkUp[self.current_sprite]
+        self.direction = 'top'
+
+    def animate_bottom(self):
+        self.image = self.walkDown[self.current_sprite]
+        self.direction = 'bottom'
