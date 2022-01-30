@@ -3,7 +3,6 @@
 
 import pygame as pg
 
-
 from tools import *
 
 
@@ -21,7 +20,6 @@ class App:
 
     def run(self):
         player, level_x, level_y = generate_level(load_level('main.txt'))
-
 
         while True:
             self.screen.fill('black')
@@ -41,7 +39,7 @@ class App:
 
             player.update()
             all_sprites.draw(self.screen)
-            score = pg.font.SysFont('arialblack', 24).render(str(player.score), True, (255, 255, 255))
+            score = pg.font.SysFont('arialblack', 24).render(f'Score: {player.score}', True, (255, 255, 255))
             self.screen.blit(score, (10, 0))
             pg.display.flip()
             self.clock.tick(self.fps)
