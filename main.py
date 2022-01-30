@@ -7,9 +7,6 @@ import pygame as pg
 from tools import *
 
 
-# pg.init()
-
-
 class App:
     """
     App class
