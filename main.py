@@ -7,12 +7,16 @@ import pygame as pg
 from tools import *
 
 
+# pg.init()
+
+
 class App:
     """
     App class
     """
 
     def __init__(self):
+        pg.init()
         self.screen = pg.display.set_mode(SIZE)
         self.clock = pg.time.Clock()
         self.fps = 30
@@ -20,8 +24,11 @@ class App:
 
     def run(self):
         player, level_x, level_y = generate_level(load_level('main.txt'))
+
+
         while True:
             self.screen.fill('black')
+
             for e in pg.event.get():
                 if e.type == pg.QUIT:
                     exit()
@@ -37,6 +44,8 @@ class App:
 
             player.update()
             all_sprites.draw(self.screen)
+            score = pg.font.SysFont('arialblack', 24).render(str(player.score), True, (255, 255, 255))
+            self.screen.blit(score, (10, 0))
             pg.display.flip()
             self.clock.tick(self.fps)
 

@@ -168,6 +168,7 @@ class Player(pg.sprite.Sprite):
             load_image('pac-man_bottom_2.png'),
         ]
 
+        self.score = 0
         self.current_sprite = 0
         self.image = self.walkRight[self.current_sprite]
         self.rect = self.image.get_rect()
@@ -193,10 +194,18 @@ class Player(pg.sprite.Sprite):
                 -(self.walkDirections[self.direction][0]),
                 -(self.walkDirections[self.direction][1])
             )
-        [e.destroy() for e in pg.sprite.groupcollide(eat_group, player_group, False, False)]
-        [e.destroy() for e in pg.sprite.groupcollide(boosters_group, player_group, False, False)]
+
+        for eat in pg.sprite.groupcollide(eat_group, player_group, False, False):
+            eat.destroy()
+            self.score += 100
+
+        for booster in pg.sprite.groupcollide(boosters_group, player_group, False, False):
+            booster.destroy()
+            self.score += 1000
+
         if len(eat_group) == 0 and len(boosters_group) == 0:
             print('YOU WIN!')
+
         self.update_anim()
 
     def update_anim(self):
