@@ -22,8 +22,6 @@ class App:
         player, level_x, level_y = generate_level(load_level('main.txt'))
         while True:
             self.screen.fill('black')
-            tiles_group.draw(self.screen)
-            player_group.draw(self.screen)
             for e in pg.event.get():
                 if e.type == pg.QUIT:
                     exit()
@@ -38,6 +36,7 @@ class App:
                         player.animate_bottom()
 
             player.update()
+            all_sprites.draw(self.screen)
             pg.display.flip()
             self.clock.tick(self.fps)
 

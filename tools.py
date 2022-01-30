@@ -12,6 +12,8 @@ with open('data/levels/main.txt') as f:
 all_sprites = pg.sprite.Group()
 tiles_group = pg.sprite.Group()
 walls_group = pg.sprite.Group()
+eat_group = pg.sprite.Group()
+boosters_group = pg.sprite.Group()
 player_group = pg.sprite.Group()
 
 TILE_WIDTH = TILE_HEIGHT = 45
@@ -66,9 +68,9 @@ def generate_level(level):
                 Tile('vertical_wall_2', x, y)
                 Wall('vertical_wall_2', x, y)
             elif level[y][x] == '#':
-                Tile('eat', x, y)
+                Eat('eat', x, y)
             elif level[y][x] == '0':
-                Tile('booster', x, y)
+                Booster('booster', x, y)
             elif level[y][x] == '~':
                 Tile('door', x, y)
             elif level[y][x] == '@':
@@ -191,6 +193,10 @@ class Player(pg.sprite.Sprite):
                 -(self.walkDirections[self.direction][0]),
                 -(self.walkDirections[self.direction][1])
             )
+        [e.destroy() for e in pg.sprite.groupcollide(eat_group, player_group, False, False)]
+        [e.destroy() for e in pg.sprite.groupcollide(boosters_group, player_group, False, False)]
+        if len(eat_group) == 0 and len(boosters_group) == 0:
+            print('YOU WIN!')
         self.update_anim()
 
     def update_anim(self):
@@ -212,3 +218,41 @@ class Player(pg.sprite.Sprite):
     def animate_bottom(self):
         self.image = self.walkDown[self.current_sprite]
         self.direction = 'bottom'
+
+
+class Eat(pg.sprite.Sprite):
+    """
+    Eat class
+    """
+
+    def __init__(self, tile_type, pos_x, pos_y):
+        super().__init__(eat_group, all_sprites)
+        self.image = TILES_IMAGES[tile_type]
+        self.rect = self.image.get_rect().move(
+            TILE_WIDTH * pos_x,
+            TILE_HEIGHT * pos_y
+        )
+
+    def destroy(self):
+        eat_group.remove(self)
+        all_sprites.remove(self)
+        self.kill()
+
+
+class Booster(pg.sprite.Sprite):
+    """
+    Booster class
+    """
+
+    def __init__(self, tile_type, pos_x, pos_y):
+        super().__init__(boosters_group, all_sprites)
+        self.image = TILES_IMAGES[tile_type]
+        self.rect = self.image.get_rect().move(
+            TILE_WIDTH * pos_x,
+            TILE_HEIGHT * pos_y
+        )
+
+    def destroy(self):
+        eat_group.remove(self)
+        all_sprites.remove(self)
+        self.kill()
