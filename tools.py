@@ -86,6 +86,12 @@ def load_level(filename):
     return list(map(lambda x: x.ljust(max_width, '#'), level_map))
 
 
+def play_sound(filename):
+    sound = pg.mixer.Sound(f'data/sounds/{filename}')
+    sound.set_volume(0.5)
+    sound.play()
+
+
 TILES_IMAGES = {
     'corner_left_top': load_image('corner_left_top.png'),
     'corner_left_bottom': load_image('corner_left_bottom.png'),
@@ -196,10 +202,12 @@ class Player(pg.sprite.Sprite):
             )
 
         for eat in pg.sprite.groupcollide(eat_group, player_group, False, False):
+            play_sound('eat.wav')
             eat.destroy()
             self.score += 100
 
         for booster in pg.sprite.groupcollide(boosters_group, player_group, False, False):
+            play_sound('booster.wav')
             booster.destroy()
             self.score += 1000
 
