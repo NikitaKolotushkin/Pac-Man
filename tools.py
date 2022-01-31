@@ -55,6 +55,12 @@ def generate_level(level):
             elif level[y][x] == '>':
                 Tile('horizontal_wall_3', x, y)
                 Wall('horizontal_wall_3', x, y)
+            elif level[y][x] == '_':
+                Tile('horizontal_wall_4', x, y)
+                Wall('horizontal_wall_4', x, y)
+            elif level[y][x] == '+':
+                Tile('horizontal_wall_5', x, y)
+                Wall('horizontal_wall_5', x, y)
             elif level[y][x] == '\\':
                 Tile('corner_right_top', x, y)
                 Wall('corner_right_top', x, y)
@@ -67,6 +73,21 @@ def generate_level(level):
             elif level[y][x] == '=':
                 Tile('vertical_wall_2', x, y)
                 Wall('vertical_wall_2', x, y)
+            elif level[y][x] == '^':
+                Tile('vertical_wall_3', x, y)
+                Wall('vertical_wall_3', x, y)
+            elif level[y][x] == '1':
+                Tile('vertical_wall_4', x, y)
+                Wall('vertical_wall_4', x, y)
+            elif level[y][x] == '!':
+                Tile('vertical_wall_5', x, y)
+                Wall('vertical_wall_5', x, y)
+            elif level[y][x] == 'L':
+                Tile('vertical_wall_left', x, y)
+                Wall('vertical_wall_left', x, y)
+            elif level[y][x] == 'R':
+                Tile('vertical_wall_right', x, y)
+                Wall('vertical_wall_right', x, y)
             elif level[y][x] == '#':
                 Eat('eat', x, y)
             elif level[y][x] == '0':
@@ -104,9 +125,15 @@ TILES_IMAGES = {
     'vertical_wall_1': load_image('vertical_wall_1.png'),
     'vertical_wall_2': load_image('vertical_wall_2.png'),
     'vertical_wall_3': load_image('vertical_wall_3.png'),
+    'vertical_wall_4': load_image('vertical_wall_4.png'),
+    'vertical_wall_5': load_image('vertical_wall_5.png'),
+    'vertical_wall_left': load_image('vertical_wall_left.png'),
+    'vertical_wall_right': load_image('vertical_wall_right.png'),
     'horizontal_wall_1': load_image('horizontal_wall_1.png'),
     'horizontal_wall_2': load_image('horizontal_wall_2.png'),
     'horizontal_wall_3': load_image('horizontal_wall_3.png'),
+    'horizontal_wall_4': load_image('horizontal_wall_4.png'),
+    'horizontal_wall_5': load_image('horizontal_wall_5.png'),
 }
 
 
