@@ -15,6 +15,7 @@ walls_group = pg.sprite.Group()
 eat_group = pg.sprite.Group()
 boosters_group = pg.sprite.Group()
 player_group = pg.sprite.Group()
+ghost_group = pg.sprite.Group()
 
 TILE_WIDTH = TILE_HEIGHT = 45
 SIZE = WIDTH, HEIGHT = ((len(data[0]) - 1) * TILE_WIDTH, len(data) * TILE_HEIGHT)
@@ -96,6 +97,14 @@ def generate_level(level):
                 Tile('door', x, y)
             elif level[y][x] == '@':
                 new_player = Player(x * TILE_WIDTH, y * TILE_HEIGHT)
+            elif level[y][x] == 'B':
+                Ghost('blinky', x * TILE_WIDTH, y * TILE_HEIGHT)
+            elif level[y][x] == 'P':
+                Ghost('pinky', x * TILE_WIDTH, y * TILE_HEIGHT)
+            elif level[y][x] == 'I':
+                Ghost('inky', x * TILE_WIDTH, y * TILE_HEIGHT)
+            elif level[y][x] == 'C':
+                Ghost('clyde', x * TILE_WIDTH, y * TILE_HEIGHT)
     return new_player, x, y
 
 
@@ -228,6 +237,9 @@ class Player(pg.sprite.Sprite):
                 -(self.walkDirections[self.direction][1])
             )
 
+        if pg.sprite.spritecollideany(self, ghost_group):
+            print('YOU DEATH!')
+
         for eat in pg.sprite.groupcollide(eat_group, player_group, False, False):
             play_sound('eat.wav')
             eat.destroy()
@@ -262,6 +274,36 @@ class Player(pg.sprite.Sprite):
     def animate_bottom(self):
         self.image = self.walkDown[self.current_sprite]
         self.direction = 'bottom'
+
+
+class Ghost(pg.sprite.Sprite):
+    def __init__(self, name, pos_x, pos_y):
+        super().__init__(ghost_group, all_sprites)
+
+        self.walkLeft = [
+            load_image(f'{name}_left_1.png'),
+            load_image(f'{name}_left_2.png'),
+        ]
+
+        self.walkRight = [
+            load_image(f'{name}_right_1.png'),
+            load_image(f'{name}_right_2.png'),
+        ]
+
+        self.walkUp = [
+            load_image(f'{name}_top_1.png'),
+            load_image(f'{name}_top_2.png'),
+        ]
+
+        self.walkDown = [
+            load_image(f'{name}_bottom_1.png'),
+            load_image(f'{name}_bottom_2.png'),
+        ]
+
+        self.current_sprite = 0
+        self.image = self.walkRight[self.current_sprite]
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (pos_x, pos_y)
 
 
 class Eat(pg.sprite.Sprite):
