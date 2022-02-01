@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pygame as pg
+import sys
 
 from tools import *
 
@@ -18,8 +19,48 @@ class App:
         self.fps = 30
         pg.display.set_caption('Pac-Man')
 
+    def terminate(self):
+        pg.quit()
+        sys.exit()
+
+    def start_screen(self):
+        intro_text = [
+            'PAC-MAN',
+            '',
+            'LMB - Первый Уровень',
+            'RMB - Второй Уровень',
+        ]
+
+        play_sound('intro.wav')
+
+        self.screen.blit(pg.transform.scale(pg.image.load('data/img/pac-man.png'), SIZE), (0, 0))
+        self.font = pg.font.SysFont('arialblack', 30)
+        self.text_coords = 75
+
+        for line in intro_text:
+            rendered_string = self.font.render(line, True, pg.Color('white'))
+            intro_rect = rendered_string.get_rect()
+            self.text_coords += 25
+            intro_rect.top = self.text_coords
+            intro_rect.x = 10
+            self.text_coords += intro_rect.height
+            self.screen.blit(rendered_string, intro_rect)
+
+        while True:
+            for e in pg.event.get():
+                if e.type == pg.QUIT:
+                    self.terminate()
+                elif e.type == pg.MOUSEBUTTONDOWN:
+                    if e.button == 1:
+                        return generate_level(load_level('level_1.txt'))
+                    if e.button == 3:
+                        return generate_level(load_level('level_2.txt'))
+
+            pg.display.flip()
+            self.clock.tick(self.fps)
+
     def run(self):
-        player, level_x, level_y = generate_level(load_level('main.txt'))
+        player, level_x, level_y = self.start_screen()
 
         while True:
             self.screen.fill('black')
