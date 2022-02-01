@@ -6,7 +6,7 @@ import pygame as pg
 import sys
 
 
-with open('data/levels/main.txt') as f:
+with open('data/levels/level_1.txt') as f:
     data = f.readlines()
 
 all_sprites = pg.sprite.Group()
