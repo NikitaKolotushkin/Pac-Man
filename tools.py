@@ -3,6 +3,7 @@
 
 import os
 import pygame as pg
+import random
 import sys
 
 
@@ -304,6 +305,34 @@ class Ghost(pg.sprite.Sprite):
         self.image = self.walkRight[self.current_sprite]
         self.rect = self.image.get_rect()
         self.rect.topleft = (pos_x, pos_y)
+        self.direction = 'right'
+        self.walkDirections = {
+            'left': (-TILE_WIDTH // 7, 0),
+            'right': (TILE_WIDTH // 7, 0),
+            'top': (0, -TILE_HEIGHT // 7),
+            'bottom': (0, TILE_HEIGHT // 7),
+        }
+        self.animDirections = {
+            'left': self.walkLeft,
+            'right': self.walkRight,
+            'top': self.walkUp,
+            'bottom': self.walkDown,
+        }
+
+    def update(self):
+        self.rect = self.rect.move(self.walkDirections[self.direction])
+        if pg.sprite.spritecollideany(self, walls_group):
+            self.rect = self.rect.move(
+                -(self.walkDirections[self.direction][0]),
+                -(self.walkDirections[self.direction][1])
+            )
+            self.direction = random.choice([*self.walkDirections])
+
+        self.update_anim()
+
+    def update_anim(self):
+        self.current_sprite = (self.current_sprite + 1) % len(self.walkRight)
+        self.image = self.animDirections[self.direction][self.current_sprite]
 
 
 class Eat(pg.sprite.Sprite):
