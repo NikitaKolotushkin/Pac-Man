@@ -27,8 +27,8 @@ class App:
         intro_text = [
             'PAC-MAN',
             '',
-            'LMB - Первый Уровень',
-            'RMB - Второй Уровень',
+            'LMB - Стандартный уровень',
+            'RMB - Песочница',
         ]
 
         play_sound('intro.wav')
@@ -78,6 +78,7 @@ class App:
                     if e.key == pg.K_DOWN or e.key == pg.K_s:
                         player.animate_bottom()
 
+            ghost_group.update()
             player.update()
             all_sprites.draw(self.screen)
             score = pg.font.SysFont('arialblack', 24).render(f'Score: {player.score}', True, (255, 255, 255))
