@@ -239,7 +239,10 @@ class Player(pg.sprite.Sprite):
             )
 
         if pg.sprite.spritecollideany(self, ghost_group):
-            print('YOU DEATH!')
+            with open('results.txt', 'a') as f:
+                f.write(f'{self.score} - LOSE')
+                f.close()
+            sys.exit()
 
         for eat in pg.sprite.groupcollide(eat_group, player_group, False, False):
             play_sound('eat.wav')
@@ -252,7 +255,10 @@ class Player(pg.sprite.Sprite):
             self.score += 1000
 
         if len(eat_group) == 0 and len(boosters_group) == 0:
-            print('YOU WIN!')
+            with open('results.txt', 'a') as f:
+                f.write(f'{self.score} - WIN')
+                f.close()
+            sys.exit()
 
         self.update_anim()
 
