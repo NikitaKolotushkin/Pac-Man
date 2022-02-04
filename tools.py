@@ -3,10 +3,11 @@
 
 import os
 import pygame as pg
+import random
 import sys
 
 
-with open('data/levels/main.txt') as f:
+with open('data/levels/level_1.txt') as f:
     data = f.readlines()
 
 all_sprites = pg.sprite.Group()
@@ -15,6 +16,7 @@ walls_group = pg.sprite.Group()
 eat_group = pg.sprite.Group()
 boosters_group = pg.sprite.Group()
 player_group = pg.sprite.Group()
+ghost_group = pg.sprite.Group()
 
 TILE_WIDTH = TILE_HEIGHT = 45
 SIZE = WIDTH, HEIGHT = ((len(data[0]) - 1) * TILE_WIDTH, len(data) * TILE_HEIGHT)
@@ -96,6 +98,14 @@ def generate_level(level):
                 Tile('door', x, y)
             elif level[y][x] == '@':
                 new_player = Player(x * TILE_WIDTH, y * TILE_HEIGHT)
+            elif level[y][x] == 'B':
+                Ghost('blinky', x * TILE_WIDTH, y * TILE_HEIGHT)
+            elif level[y][x] == 'P':
+                Ghost('pinky', x * TILE_WIDTH, y * TILE_HEIGHT)
+            elif level[y][x] == 'I':
+                Ghost('inky', x * TILE_WIDTH, y * TILE_HEIGHT)
+            elif level[y][x] == 'C':
+                Ghost('clyde', x * TILE_WIDTH, y * TILE_HEIGHT)
     return new_player, x, y
 
 
@@ -228,6 +238,12 @@ class Player(pg.sprite.Sprite):
                 -(self.walkDirections[self.direction][1])
             )
 
+        if pg.sprite.spritecollideany(self, ghost_group):
+            with open('results.txt', 'a') as f:
+                f.write(f'{self.score} - LOSE')
+                f.close()
+            sys.exit()
+
         for eat in pg.sprite.groupcollide(eat_group, player_group, False, False):
             play_sound('eat.wav')
             eat.destroy()
@@ -239,7 +255,10 @@ class Player(pg.sprite.Sprite):
             self.score += 1000
 
         if len(eat_group) == 0 and len(boosters_group) == 0:
-            print('YOU WIN!')
+            with open('results.txt', 'a') as f:
+                f.write(f'{self.score} - WIN')
+                f.close()
+            sys.exit()
 
         self.update_anim()
 
@@ -262,6 +281,64 @@ class Player(pg.sprite.Sprite):
     def animate_bottom(self):
         self.image = self.walkDown[self.current_sprite]
         self.direction = 'bottom'
+
+
+class Ghost(pg.sprite.Sprite):
+    def __init__(self, name, pos_x, pos_y):
+        super().__init__(ghost_group, all_sprites)
+
+        self.walkLeft = [
+            load_image(f'{name}_left_1.png'),
+            load_image(f'{name}_left_2.png'),
+        ]
+
+        self.walkRight = [
+            load_image(f'{name}_right_1.png'),
+            load_image(f'{name}_right_2.png'),
+        ]
+
+        self.walkUp = [
+            load_image(f'{name}_top_1.png'),
+            load_image(f'{name}_top_2.png'),
+        ]
+
+        self.walkDown = [
+            load_image(f'{name}_bottom_1.png'),
+            load_image(f'{name}_bottom_2.png'),
+        ]
+
+        self.current_sprite = 0
+        self.image = self.walkRight[self.current_sprite]
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (pos_x, pos_y)
+        self.direction = 'right'
+        self.walkDirections = {
+            'left': (-TILE_WIDTH // 7, 0),
+            'right': (TILE_WIDTH // 7, 0),
+            'top': (0, -TILE_HEIGHT // 7),
+            'bottom': (0, TILE_HEIGHT // 7),
+        }
+        self.animDirections = {
+            'left': self.walkLeft,
+            'right': self.walkRight,
+            'top': self.walkUp,
+            'bottom': self.walkDown,
+        }
+
+    def update(self):
+        self.rect = self.rect.move(self.walkDirections[self.direction])
+        if pg.sprite.spritecollideany(self, walls_group):
+            self.rect = self.rect.move(
+                -(self.walkDirections[self.direction][0]),
+                -(self.walkDirections[self.direction][1])
+            )
+            self.direction = random.choice([*self.walkDirections])
+
+        self.update_anim()
+
+    def update_anim(self):
+        self.current_sprite = (self.current_sprite + 1) % len(self.walkRight)
+        self.image = self.animDirections[self.direction][self.current_sprite]
 
 
 class Eat(pg.sprite.Sprite):
