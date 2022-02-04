@@ -24,6 +24,11 @@ class App:
         sys.exit()
 
     def start_screen(self):
+        """
+        Start screen
+
+        :return: None
+        """
         intro_text = [
             'PAC-MAN',
             '',
@@ -59,7 +64,28 @@ class App:
             pg.display.flip()
             self.clock.tick(self.fps)
 
+    def end_game_screen(self, type_):
+
+        intro_text = [
+            'GAME OVER!' if type_ == 'lose' else 'Победа!',
+            '',
+            f'Ваш счёт:{self.score}'
+        ]
+
+        while True:
+            for e in pg.event.get():
+                if e.type == pg.QUIT or e.type == pg.MOUSEBUTTONDOWN:
+                    sys.exit()
+
+            pg.display.flip()
+            self.clock.tick(self.fps)
+
     def run(self):
+        """
+        Main Loop function
+
+        :return: None
+        """
         player, level_x, level_y = self.start_screen()
 
         while True:
@@ -81,8 +107,8 @@ class App:
             ghost_group.update()
             player.update()
             all_sprites.draw(self.screen)
-            score = pg.font.SysFont('arialblack', 24).render(f'Score: {player.score}', True, (255, 255, 255))
-            self.screen.blit(score, (10, 0))
+            self.score = pg.font.SysFont('arialblack', 24).render(f'Score: {player.score}', True, (255, 255, 255))
+            self.screen.blit(self.score, (10, 0))
             pg.display.flip()
             self.clock.tick(self.fps)
 
